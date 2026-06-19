@@ -253,3 +253,45 @@ If you see something like this in your terminal: `>>>` or `...`
 You accidentally started Python interactive mode.
 It happens.
 Press `Ctrl+c` (both keys together) or `Ctrl+Z` then `Enter` on Windows.
+
+## Update Authorship
+
+-create kafka_producer_fuemmeler.py
+-create kafka_consumer_fuemmeler.py
+-change topic name in .env file
+
+# Update ReadMe, zensical. Update About section on repo main page
+
+## Make a technical modification
+
+- In the .env file, make a few small modifications.
+- Change Kafka topic to streaming-06-scenarios-fuemmeler
+- Change Message count to 6 and Message Interval Seconds to 4
+
+## Apply a new skill
+
+- copy storage_case.py to new file storage_fuemmeler.py
+- in the storage_fuemmeler file, update region_id to payment_method
+- add this to get total_sales and average_sale:
+  sql_by_payment_method = f"""
+    SELECT
+        payment_method,
+        COUNT(*) AS sale_count,
+        SUM(sale_total) AS total_sales,
+        AVG(sale_total) AS average_sale
+    FROM {VALID_TABLE_NAME}
+    GROUP BY payment_method
+    ORDER BY total_sales DESC
+    """  # noqa: S608
+- then update log statement to include the above:
+  LOG.info("DuckDB valid sales by payment method:")
+
+for payment_method, sale_count, total_sales, avg_sale in rows:
+    LOG.info(
+        f"  {payment_method}: "
+        f"count={sale_count}, "
+        f"total_sales=${total_sales:.2f}, "
+        f"avg_sale=${avg_sale:.2f}"
+    )
+
+# Test by running producer & consumer files to check for successful output files
